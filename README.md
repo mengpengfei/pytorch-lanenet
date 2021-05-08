@@ -4,5 +4,5 @@
 
 inspire by https://github.com/MaybeShewill-CV/lanenet-lane-detection and https://github.com/leonfrank/lanenet-danet-pytorch
 
-Using Bisentv2 as Encoder.
+Using Bisenetv2 as Encoder.
 
