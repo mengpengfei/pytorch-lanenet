@@ -6,3 +6,15 @@
 inspired by https://github.com/MaybeShewill-CV/lanenet-lane-detection and https://github.com/leonfrank/lanenet-danet-pytorch
 
 Using Bisenetv2 as Encoder.
+
+install(安装)
+
+
+python setup.py install
+
+Usage(使用)
+
+Train(训练)
+
+
+

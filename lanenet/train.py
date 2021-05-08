@@ -142,8 +142,8 @@ def main():
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
 
-    train_dataset_file = '/workspace/all/index/train1'
-    val_dataset_file = '/workspace/all/index/val1'
+    train_dataset_file = config.train_dataset_file
+    val_dataset_file = config.val_dataset_file
 
     train_dataset = LaneDataSet(train_dataset_file, transform=None)
     # train_dataset = LaneDataSet(train_dataset_file, transform=transforms.Compose([Rescale((1280, 720))]))

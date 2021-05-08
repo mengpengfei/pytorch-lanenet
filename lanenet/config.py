@@ -6,3 +6,6 @@ gpu_no='cuda:0'
 device_ids = [0, 1,2,3,4,5,6]
 # 1-train，2-val
 is_training=1
+
+train_dataset_file = '/workspace/all/index/train1'
+val_dataset_file = '/workspace/all/index/val1'
