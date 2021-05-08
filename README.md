@@ -1,0 +1,2 @@
+# pytorch-lanenet
+全网效果最好好的lanenet网络，主干网络基于bisenetv2并对主干网络做了修改，效果远好于bisnetv2
