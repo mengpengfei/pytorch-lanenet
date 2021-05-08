@@ -8,9 +8,10 @@ from torchvision import transforms
 from lanenet.dataloader.transformers import Rescale
 from lanenet.model.model import LaneNet
 import torch.nn as nn
+import argparse
 import os
-DEVICE = torch.device('cuda:3' if torch.cuda.is_available() else 'cpu')
-os.environ["CUDA_VISIBLE_DEVICES"] = '3'
+DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 def compose_img(image_data, out, i=0):
     oridata=image_data[i].cpu().numpy()
@@ -38,7 +39,16 @@ def compose_img(image_data, out, i=0):
     return val_gt
 
 if __name__ == '__main__':
-    model_path = './checkpoints-combine-new1/83_checkpoint.pth'
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--weight", help="./checkpoints/83_checkpoint.pth")
+    parser.add_argument("--video", help="./checkpoints/83_checkpoint.pth")
+    args=parser.parse_args()
+    model_path = args.weight
+
+    # sourceFileName='ch0_20200318140335_20200318140435'
+    # video_path = os.path.join("/workspace/lanenet-lane-detection-11000", sourceFileName+'.mp4')
+    video_path = args.video
+
     gpu = True
     if not torch.cuda.is_available():
         gpu = False
@@ -61,8 +71,6 @@ if __name__ == '__main__':
 
     model.eval()
 
-    sourceFileName='ch0_20200318140335_20200318140435'
-    video_path = os.path.join("/workspace/lanenet-lane-detection-11000", sourceFileName+'.mp4')
     times=0
     frameFrequency=1
     camera = cv2.VideoCapture(video_path)

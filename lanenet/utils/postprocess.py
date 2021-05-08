@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.cluster import MeanShift, estimate_bandwidth
 
 
-def embedding_post_process(embedding, bin_seg, band_width=1.5, max_num_lane=4):
+def embedding_post_process(embedding, bin_seg, band_width=1.5, max_num_lane=6):
     """
     First use mean shift to find dense cluster center.
 

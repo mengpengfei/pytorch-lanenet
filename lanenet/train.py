@@ -97,7 +97,7 @@ def train(train_loader, model, optimizer, epoch,w1,w2,w3,w4):
             batch_time.update(time.time() - end)
             end = time.time()
 
-            if step % 30 == 0:
+            if step % config.show_interval == 0:
                 print(
                     "Epoch {ep} Step {st} |({batch}/{size})| ETA: {et:.2f}|Total loss:{tot:.5f}|Binary loss:{bin:.5f}|Instance loss:{ins:.5f}|IoU:{iou:.5f}".format(
                         ep=epoch + 1,
@@ -131,13 +131,13 @@ def save_model(save_path, epoch, model):
 
 
 def main():
-    args = parse_args()
+    # args = parse_args()
 
-    save_path = args.save
-    w1 = args.w1
-    w2 = args.w2
-    w3 = args.w3
-    w4 = args.w4
+    save_path = config.save_path
+    w1 = config.w1
+    w2 = config.w2
+    w3 = config.w3
+    w4 = config.w4
 
     if not os.path.isdir(save_path):
         os.makedirs(save_path)
@@ -147,19 +147,19 @@ def main():
 
     train_dataset = LaneDataSet(train_dataset_file, transform=None)
     # train_dataset = LaneDataSet(train_dataset_file, transform=transforms.Compose([Rescale((1280, 720))]))
-    train_loader = DataLoader(train_dataset, batch_size=args.bs, shuffle=True,num_workers=24,pin_memory=True,drop_last=True)
+    train_loader = DataLoader(train_dataset, batch_size=config.bs, shuffle=True,num_workers=4,pin_memory=True,drop_last=True)
 
-    if args.val:
-        val_dataset = LaneDataSet(val_dataset_file, transform=None)
-        # val_dataset = LaneDataSet(val_dataset_file, transform=transforms.Compose([Rescale((1280, 720))]))
-        val_loader = DataLoader(val_dataset, batch_size=args.bs, shuffle=True,num_workers=24,pin_memory=True,drop_last=True)
+    # if args.val:
+    val_dataset = LaneDataSet(val_dataset_file, transform=None)
+    # val_dataset = LaneDataSet(val_dataset_file, transform=transforms.Compose([Rescale((1280, 720))]))
+    val_loader = DataLoader(val_dataset, batch_size=config.bs, shuffle=True,num_workers=4,pin_memory=True,drop_last=True)
 
     model = LaneNet()
     model = nn.DataParallel(model, device_ids=config.device_ids)
     model.to(DEVICE)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    print(f"{args.epochs} epochs {len(train_dataset)} training samples\n")
+    optimizer = torch.optim.Adam(model.parameters(), lr=config.lr)
+    print(f"{config.epochs} epochs {len(train_dataset)} training samples\n")
     log_model="/workspace/pytorch-lanenet-master/checkpoints-combine-new1/83_checkpoint_state.pth"
     # 如果有保存的模型，则加载模型，并在其基础上继续训练
     if os.path.exists(log_model):
@@ -177,12 +177,12 @@ def main():
         start_epoch = 0
         print('no model,will start train from 0 epoche')
 
-    for epoch in range(start_epoch, args.epochs):
+    for epoch in range(start_epoch, config.epochs):
         print(f"Epoch {epoch}")
         train_iou = train(train_loader, model, optimizer, epoch,w1,w2,w3,w4)
-        if args.val:
-            val_iou = test(val_loader, model, epoch)
-        if (epoch+1) % 3 == 0:
+        # if args.val:
+        val_iou = test(val_loader, model, epoch)
+        if (epoch+1) % config.save_interval == 0:
             save_model(save_path, epoch, model)
             save_state_name = os.path.join(save_path, f'{epoch}_checkpoint_state.pth')
             checkpoint = {
@@ -192,8 +192,8 @@ def main():
             }
             torch.save(checkpoint, save_state_name)
         print(f"Train IoU : {train_iou}")
-        if args.val:
-            print(f"Val IoU : {val_iou}")
+        # if args.val:
+        print(f"Val IoU : {val_iou}")
 
 
 if __name__ == '__main__':
